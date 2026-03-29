@@ -4,7 +4,11 @@ import { Plus } from "lucide-react"
 import AddMoreImage from "./AddMoreImage"
 import ImageCard from "./ImageCard"
 
-const ImageList = () => {
+interface ImageListProps {
+   fileInputRef: React.RefObject<HTMLInputElement | null>
+}
+
+const ImageList = ({fileInputRef}: ImageListProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -14,7 +18,9 @@ const ImageList = () => {
     >
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
-          <AddMoreImage />
+          <AddMoreImage onClick={() => {
+            fileInputRef.current?.click()
+          }} />
           <ImageCard />
           <ImageCard />
           <ImageCard />

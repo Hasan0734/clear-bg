@@ -37,7 +37,6 @@ const HeroSection = () => {
       </div>
 
       <UploadImage imageSrc={imageSrc} setImageSrc={setImageSrc} />
-      {imageSrc && <ImageList />}
     </section>
   )
 }

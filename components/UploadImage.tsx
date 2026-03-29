@@ -6,6 +6,7 @@ import ImageProcessing from "./ImageProcessing"
 import ImagePreview from "./ImagePreview"
 import { Stage } from "@/lib/types"
 import DropZone from "./DropZone"
+import ImageList from "./ImageList"
 
 interface UploadImageProps {
   imageSrc: string | null
@@ -231,6 +232,8 @@ const UploadImage = ({ imageSrc, setImageSrc }: UploadImageProps) => {
           </p>
         </motion.div>
       )} */}
+      {imageSrc && <ImageList fileInputRef={fileInputRef} />}
+
     </div>
   )
 }

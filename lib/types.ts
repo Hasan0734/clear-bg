@@ -1,0 +1,1 @@
+export type Stage = "idle" | "preview" | "processing" | "done"

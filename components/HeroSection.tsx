@@ -10,11 +10,11 @@ const HeroSection = () => {
 
   return (
     <section
-      className={cn("hero-gradient px-4 pt-32 pb-20 relative", {
+      className={cn("hero-gradient relative px-4 pt-32 pb-20", {
         "h-dvh": imageSrc,
       })}
     >
-      <div className="container mx-auto max-w-5xl text-center ">
+      <div className="mx-auto max-w-5xl text-center">
         {!imageSrc && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -34,10 +34,10 @@ const HeroSection = () => {
             </p>
           </motion.div>
         )}
-
-        <UploadImage imageSrc={imageSrc} setImageSrc={setImageSrc} />
-        {imageSrc && <ImageList/>}
       </div>
+
+      <UploadImage imageSrc={imageSrc} setImageSrc={setImageSrc} />
+      {imageSrc && <ImageList />}
     </section>
   )
 }

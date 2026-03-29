@@ -1,21 +1,25 @@
 "use client"
-import { useState, useEffect } from "react"
 import { Button } from "./ui/button"
 import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 
 const ThemeToggle = () => {
-  const [darkMode, setDarkMode] = useState(false)
+  const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", darkMode)
-  }, [darkMode])
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light")
+      return
+    }
+
+    if (theme === "light") {
+      setTheme("dark")
+    }
+  }
+
   return (
-    <Button
-    variant={'gradient'}
-      onClick={() => setDarkMode(!darkMode)}
-      size={"icon"}
-    >
-      {darkMode ? <Sun /> : <Moon />}
+    <Button variant={"gradient"} onClick={toggleTheme} size={"icon"}>
+      {theme === "dark" ? <Sun /> : <Moon />}
     </Button>
   )
 }

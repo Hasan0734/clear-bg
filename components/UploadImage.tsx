@@ -1,19 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { Card } from "./ui/card"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowRight, Image, Upload, X } from "lucide-react"
-import { Button } from "./ui/button"
 import ResultSection from "./ResultSection"
-
-type Stage = "idle" | "preview" | "processing" | "done"
+import ActionTab from "./ActionTab"
+import ImageProcessing from "./ImageProcessing"
+import ImagePreview from "./ImagePreview"
+import { Stage } from "@/lib/types"
+import DropZone from "./DropZone"
 
 interface UploadImageProps {
   imageSrc: string | null
   setImageSrc: React.Dispatch<React.SetStateAction<string | null>>
 }
-
-const SAMPLE_IMG =
-  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80"
 
 const PROCESSING_STEPS = [
   "Analyzing image...",
@@ -50,36 +47,36 @@ const UploadImage = ({ imageSrc, setImageSrc }: UploadImageProps) => {
     )
   }, [])
 
-  useEffect(() => {
-    if (stage !== "processing") return
+    useEffect(() => {
+      if (stage !== "processing") return
 
-    setProgress(0)
-    setStepIdx(0)
+      setProgress(0)
+      setStepIdx(0)
 
-    const duration = 3500
-    const interval = 30
-    let elapsed = 0
+      const duration = 3500
+      const interval = 30
+      let elapsed = 0
 
-    const timer = setInterval(() => {
-      elapsed += interval
+      const timer = setInterval(() => {
+        elapsed += interval
 
-      const pct = Math.min(100, (elapsed / duration) * 100)
-      setProgress(pct)
-      setStepIdx(
-        Math.min(
-          PROCESSING_STEPS.length - 1,
-          Math.floor((pct / 100) * PROCESSING_STEPS.length)
+        const pct = Math.min(100, (elapsed / duration) * 100)
+        setProgress(pct)
+        setStepIdx(
+          Math.min(
+            PROCESSING_STEPS.length - 1,
+            Math.floor((pct / 100) * PROCESSING_STEPS.length)
+          )
         )
-      )
 
-      if (pct >= 100) {
-        clearInterval(timer)
-        setTimeout(() => setStage("done"), 300)
-      }
-    }, interval)
+        if (pct >= 100) {
+          clearInterval(timer)
+          setTimeout(() => setStage("done"), 300)
+        }
+      }, interval)
 
-    return () => clearInterval(timer)
-  }, [stage])
+      return () => clearInterval(timer)
+    }, [stage])
 
   const loadImage = (src: string) => {
     setImageSrc(src)
@@ -101,12 +98,14 @@ const UploadImage = ({ imageSrc, setImageSrc }: UploadImageProps) => {
   }
 
   return (
-    <>
+    <div>
+      {stage === "done" && imageSrc && <ActionTab reset={reset} />}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="mx-auto mb-12 max-w-xl"
+        className="mx-auto mb-12 max-w-lg"
       >
         <input
           ref={fileInputRef}
@@ -119,179 +118,32 @@ const UploadImage = ({ imageSrc, setImageSrc }: UploadImageProps) => {
         <AnimatePresence mode="wait">
           {/* IDLE — drag & drop zone */}
           {stage === "idle" && (
-            <motion.div
-              key="idle"
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.3 }}
-              onDragOver={(e) => {
-                e.preventDefault()
-                setDragOver(true)
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`glass group cursor-pointer rounded-4xl border border-dashed p-10 shadow-card transition-all duration-200 ${
-                dragOver
-                  ? "scale-[1.02] border-primary bg-primary/5"
-                  : "border-primary/30 hover:border-primary/60"
-              }`}
-            >
-              <div className="flex h-60 flex-col items-center justify-center gap-4">
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {dragOver
-                      ? "Drop your image here!"
-                      : "Drag & drop your image here"}
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    or click to browse • PNG, JPG, WEBP up to 25MB
-                  </p>
-                </div>
-                <div
-                  className="mt-2 flex gap-3"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Button
-                    variant="gradient"
-                    size="lg"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <Upload className="h-4 w-4" /> Upload Image
-                  </Button>
-                  <Button
-                    variant="glass"
-                    size="lg"
-                    onClick={() => loadImage(SAMPLE_IMG)}
-                  >
-                    <Image className="h-4 w-4" /> Try Sample
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
+            <DropZone
+              setDragOver={setDragOver}
+              handleDrop={handleDrop}
+              dragOver={dragOver}
+              fileInputRef={fileInputRef}
+              loadImage={loadImage}
+            />
           )}
 
           {/* PREVIEW — show uploaded image, confirm */}
           {stage === "preview" && imageSrc && (
-            <motion.div
-              key="preview"
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              className="glass rounded-2xl p-6 shadow-card"
-            >
-              <div className="relative mb-4 max-h-80 overflow-hidden rounded-xl">
-                <img
-                  src={imageSrc}
-                  alt="Preview"
-                  className="h-full max-h-80 w-full object-contain"
-                />
-                <button
-                  onClick={reset}
-                  className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-card/80 backdrop-blur transition-colors hover:bg-card"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-              {/* <div className="flex justify-center gap-3">
-                <Button
-                  variant="gradient"
-                  size="lg"
-                  onClick={() => setStage("processing")}
-                >
-                  <span className="relative flex h-3 w-3">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-foreground/60" />
-                    <span className="relative inline-flex h-3 w-3 rounded-full bg-primary-foreground" />
-                  </span>
-                  Remove Background
-                </Button>
-                <Button variant="glass" size="lg" onClick={reset}>
-                  Choose Another
-                </Button>
-              </div> */}
-            </motion.div>
+            <ImagePreview
+              reset={reset}
+              imageSrc={imageSrc}
+              setStage={setStage}
+            />
           )}
 
           {/* PROCESSING — animated progress */}
           {stage === "processing" && imageSrc && (
-            <motion.div
-              key="processing"
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              className="glass rounded-2xl p-8 shadow-card"
-            >
-              <div className="relative mb-6 max-h-64 overflow-hidden rounded-xl">
-                <img
-                  src={imageSrc}
-                  alt="Processing"
-                  className="h-full max-h-64 w-full object-contain blur-[2px] brightness-75 transition-all duration-500"
-                />
-                {/* Scanning line */}
-                <motion.div
-                  className="gradient-bg shadow-glow absolute right-0 left-0 h-1"
-                  animate={{ top: ["0%", "100%", "0%"] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-                {/* AI nodes overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    {[0, 1, 2, 3].map((i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute h-3 w-3 rounded-full bg-primary"
-                        style={{
-                          top: `${[30, 60, 40, 70][i]}%`,
-                          left: `${[20, 70, 50, 35][i]}%`,
-                        }}
-                        animate={{
-                          opacity: [0.3, 1, 0.3],
-                          scale: [0.8, 1.3, 0.8],
-                        }}
-                        transition={{
-                          duration: 1.5,
-                          repeat: Infinity,
-                          delay: i * 0.3,
-                        }}
-                      />
-                    ))}
-                    <div className="gradient-bg shadow-glow animate-pulse-glow flex h-16 w-16 items-center justify-center rounded-full">
-                      <span className="text-2xl">🧠</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="mx-auto max-w-md">
-                <div className="mb-2 flex justify-between text-xs text-muted-foreground">
-                  <span>{PROCESSING_STEPS[stepIdx]}</span>
-                  <span>{Math.round(progress)}%</span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                  <motion.div
-                    className="gradient-bg h-full rounded-full"
-                    style={{ width: `${progress}%` }}
-                    transition={{ duration: 0.1 }}
-                  />
-                </div>
-                <div className="mt-4 flex justify-center gap-1">
-                  {PROCESSING_STEPS.map((_, i) => (
-                    <div
-                      key={i}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        i <= stepIdx ? "gradient-bg w-6" : "w-1.5 bg-muted"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+            <ImageProcessing
+              imageSrc={imageSrc}
+              PROCESSING_STEPS={PROCESSING_STEPS}
+              stepIdx={stepIdx}
+              progress={progress}
+            />
           )}
 
           {/* DONE — result with edit background */}
@@ -379,10 +231,7 @@ const UploadImage = ({ imageSrc, setImageSrc }: UploadImageProps) => {
           </p>
         </motion.div>
       )} */}
-
-
-      
-    </>
+    </div>
   )
 }
 

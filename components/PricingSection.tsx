@@ -59,7 +59,7 @@ const PricingSection = () => (
             }`}
           >
             {plan.popular && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-card text-foreground text-xs font-bold px-3 py-1 rounded-full shadow-soft">
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-input text-foreground text-xs font-bold px-3 py-1 rounded-full shadow-soft">
                 Most Popular
               </span>
             )}

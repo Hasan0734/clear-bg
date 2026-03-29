@@ -11,6 +11,7 @@ const ThemeToggle = () => {
   }, [darkMode])
   return (
     <Button
+    variant={'gradient'}
       onClick={() => setDarkMode(!darkMode)}
       size={"icon"}
     >

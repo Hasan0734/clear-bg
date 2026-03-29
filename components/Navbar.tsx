@@ -11,13 +11,13 @@ const Navbar = () => {
 
   const links = ["Features", "Pricing", "API", "Login"]
   return (
-    <nav className="glass fixed top-0 right-0 left-0 z-50">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
+    <nav className="glass fixed top-0 right-0 left-0 z-50 px-4">
+      <div className="max-w-5xl mx-auto flex h-16 items-center justify-between">
         <Link href="/" className="flex items-center gap-2 text-lg font-bold">
           <div className="gradient-bg flex h-9 w-9 items-center justify-center rounded-xl">
             <Sparkles className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-primary-foreground">ClearBg</span>
+          <span className="text-foreground">ClearBg</span>
         </Link>
 
         {/* Desktop */}
@@ -41,10 +41,11 @@ const Navbar = () => {
 
         {/* Mobile */}
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 md:hidden">
           <ThemeToggle />
           <Button
-            size={'icon'}
+            size={"icon"}
+            variant={"gradient"}
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X /> : <Menu />}

@@ -1,6 +1,6 @@
 import FeaturesSection from "@/components/FeaturesSection"
 import Footer from "@/components/Footer"
-import Hero from "@/components/Hero"
+import Hero from "@/components/HeroSection"
 import PricingSection from "@/components/PricingSection"
 import { Button } from "@/components/ui/button"
 

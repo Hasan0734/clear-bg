@@ -23,11 +23,13 @@ const ImageProcessing = ({
         className="glass rounded-2xl p-8 shadow-card"
       >
         <div className="relative mb-6 flex max-h-64 justify-center overflow-hidden rounded-xl">
-          <img
-            src={imageSrc}
-            alt="Processing"
-            className="object-contain blur-[2px] brightness-75 transition-all duration-500"
-          />
+          <div className="flex size-62 items-center justify-center">
+            <img
+              src={imageSrc}
+              alt="Processing"
+              className="object-contain blur-[2px] brightness-75 transition-all duration-500"
+            />
+          </div>
           {/* Scanning line */}
           <motion.div
             className="gradient-bg shadow-glow absolute right-0 left-0 h-1"

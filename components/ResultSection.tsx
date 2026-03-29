@@ -78,11 +78,13 @@ const ResultSection = ({ imageSrc, onReset }: ResultSectionProps) => {
           className="glass rounded-2xl p-8 shadow-card"
         >
           <div className="relative mb-6 flex max-h-64 justify-center overflow-hidden rounded-xl">
-            <img
-              src={imageSrc}
-              alt="Result"
-              className="transition-all duration-500"
-            />
+            <div className="size-62 flex justify-center items-center">
+              <img
+                src={imageSrc}
+                alt="Result"
+                className="transition-all duration-500"
+              />
+            </div>
           </div>
         </motion.div>
 

@@ -11,7 +11,7 @@ const ActionTab = ({reset}: ActionTabProps) => {
     const [editOpen, setEditOpen] = useState(false)
 
   return (
-    <div className="max-w-2xl mx-auto mb-10 shadow-card flex flex-wrap justify-center gap-3 rounded-full bg-card px-3 py-1">
+    <div className="max-w-2xl glass mx-auto mb-10 shadow-card flex flex-wrap justify-center gap-3 rounded-full bg-card px-3 py-1">
       <Button variant="gradient" size="lg">
         <Download className="h-4 w-4" /> Download HD
       </Button>
